@@ -1,8 +1,12 @@
 import express from 'express'
 import jwt from 'jsonwebtoken'
 import mongoose from 'mongoose'
+import bcrypt from 'bcrypt'
+import { validationResult } from 'express-validator';
+import { registerValidation } from './validations/auth.js'
+import UserModel from './models/User.js'
 
-mongoose.connect('mongodb+srv://igormelnikov94_db_user:B3CClaZFwDYeXJMi@cluster0.7mmqj3e.mongodb.net/?appName=Cluster0',   
+mongoose.connect('mongodb+srv://igormelnikov94_db_user:B3CClaZFwDYeXJMi@cluster0.7mmqj3e.mongodb.net/blog?appName=Cluster0',   
 )
     .then(() => console.log('DB ok'))
     .catch((err) => console.log(err))
@@ -15,19 +19,43 @@ app.get('/', (req, res) =>{
     res.send('111Hello')
 })
 
-app.post('/auth/login', (req, res) => {
-    console.log(req.body)
+app.post('/auth/register', registerValidation, async (req, res) => {
+    try {
+        const errors = validationResult(req)
+        if (!errors.isEmpty) {
+            return res.status(400).json(errors.array())
+        }
 
-    const token = jwt.sign(
-        {
+        const password = req.body.password
+        const salt = await bcrypt.genSalt(10)
+        const hash = await bcrypt.hash(password, salt)
+
+        const doc = new UserModel({
             email: req.body.email,
-            fullName: 'Vacya'
-        }, 'secret123')
+            fullName: req.body.fullName,
+            passwordHash: hash,
+            avatarUrl: req.body.avatarUrl,
+        })
 
-    res.json({
-        success: true,
-        token,
-    })
+        const user = await doc.save()
+
+        const token = jwt.sign({
+            _id: user._id
+        }, 
+        'secret123',
+        {
+            expiresIn: '30d'
+        })
+
+        const { passwordHash, ...userData } = user._doc
+
+        res.json({...userData, token})
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            message: "Не удалось зарегистрироваться"
+        })
+    }
 })
 
 app.listen(4444, (err) =>{
