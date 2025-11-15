@@ -9,11 +9,11 @@ function App() {
       <Header />
       <Container maxWidth="lg">
         <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/posts/:id' element={<FullPost />} />
-          <Route path='/add-post' element={<AddPost />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Registration />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/posts/:id" element={<FullPost />} />
+          <Route path="/add-post"element={<AddPost />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Registration />} />
         </Routes>
       </Container>
     </>
