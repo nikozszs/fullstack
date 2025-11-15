@@ -3,8 +3,9 @@ import multer from 'multer'
 import mongoose from 'mongoose'
 import { registerValidation, loginValidation, postCreateValidation } from './validations.js'
 import { checkAuth, handleErrors } from './utils/index.js'
-import { UserController, PostController } from './controllers/index.js'
-
+import { getAll, create, update, remove, getOne } from './controllers/PostController.js'
+import { getMe, login, register } from './controllers/UserController.js'
+import cors from 'cors';
 
 mongoose.connect('mongodb+srv://igormelnikov94_db_user:B3CClaZFwDYeXJMi@cluster0.7mmqj3e.mongodb.net/blog?appName=Cluster0',   
 )
@@ -25,23 +26,24 @@ const storage = multer.diskStorage({
 const upload = multer({ storage })
 
 app.use(express.json())
+app.use(cors());
 app.use('/uploads', express.static('uploads'))
 
-app.get('/auth/me', checkAuth, UserController.getMe)
-app.post('/auth/login', loginValidation, handleErrors, UserController.login)
-app.post('/auth/register', registerValidation, handleErrors, UserController.register)
+app.get('/auth/me', checkAuth, getMe)
+app.post('/auth/login', loginValidation, handleErrors, login)
+app.post('/auth/register', registerValidation, handleErrors, register)
 
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
     res.json({
-        url: `/uploads/${req.file.originalname}`
+        url: ('/uploads/' + req.file.originalname),
     })
 })
 
-app.get('/posts', PostController.getAll)
-app.get('/post/:id', PostController.getOne)
-app.post('/posts', checkAuth, postCreateValidation, handleErrors, PostController.create)
-app.delete('/posts/:id', checkAuth, PostController.remove)
-app.patch('/posts/:id', checkAuth, postCreateValidation, handleErrors, PostController.update)
+app.get('/posts', getAll)
+app.get('/post/:id', getOne)
+app.post('/posts', checkAuth, postCreateValidation, handleErrors, create)
+app.delete('/posts/:id', checkAuth, remove)
+app.patch('/posts/:id', checkAuth, postCreateValidation, handleErrors, update)
 
 app.listen(4444, (err) =>{
     if (err) {

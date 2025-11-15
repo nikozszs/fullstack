@@ -17,6 +17,12 @@ export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
     return data
 })
 
+export const fetchTags = createAsyncThunk('posts/fetchTags', async () => {
+    const { data } = await axios.get('/tags')
+    return data
+})
+
+
 const postsSlice = createSlice({
     name: 'posts',
     initialState,
