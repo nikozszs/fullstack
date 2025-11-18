@@ -13,6 +13,7 @@ export const Home = () => {
   const { posts, tags } = useSelector(state => state.posts)
 
   const isPostsLoading = posts.status === 'loading'
+  const isTagsLoading = tags.status === 'loading'
 
   React.useEffect(() => {
     dispatch(fetchPosts())
@@ -27,26 +28,25 @@ export const Home = () => {
       </Tabs>
       <Grid container spacing={4}>
         <Grid xs={8} item>
-          {(isPostsLoading ? [...Array(5)] : posts.items).map((obj, index) => 
-          isPostsLoading ? (
-            <Post key={index} isLoading={true} />
-          ) : (
-            <Post
-              id={obj._id}
-              title={obj.title}
-              imageUrl="https://res.cloudinary.com/practicaldev/image/fetch/s--UnAfrEG8--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/icohm5g0axh9wjmu4oc3.png"
-              user={obj.user}
-              createdAt={obj.createdAt}
-              viewsCount={obj.viewsCount}
-              commentsCount={3}
-              tags={obj.tags}
-              isEditable
-            />
-          )  
-        )}
+          {isPostsLoading
+            ? [...Array(5)].map((_, index) => <Post key={index} isLoading />)
+            : posts.items.map(post => (
+                <Post
+                id={post._id}
+                title={post.title}
+                imageUrl="https://res.cloudinary.com/practicaldev/image/fetch/s--UnAfrEG8--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://dev-to-uploads.s3.amazonaws.com/uploads/articles/icohm5g0axh9wjmu4oc3.png"
+                user={post.user}
+                createdAt={post.createdAt}
+                viewsCount={post.viewsCount}
+                commentsCount={3}
+                tags={post.tags}
+                isEditable
+                />
+              ))
+          }
         </Grid>
         <Grid xs={4} item>
-          <TagsBlock items={['react', 'typescript', 'заметки']} isLoading={false} />
+          <TagsBlock items={tags.items} isLoading={isTagsLoading} />
           <CommentsBlock
             items={[
               {
