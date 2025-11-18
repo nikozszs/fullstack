@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Post } from '../components/Post';
 import { TagsBlock } from '../components/TagsBlock';
 import { CommentsBlock } from '../components/CommentsBlock';
-import { fetchPosts } from '../redux/slices/postsSlice';
+import { fetchPosts, fetchTags } from '../redux/slices/postsSlice';
 
 export const Home = () => {
   const dispatch = useDispatch()
@@ -16,6 +16,7 @@ export const Home = () => {
 
   React.useEffect(() => {
     dispatch(fetchPosts())
+    dispatch(fetchTags())
   }, [dispatch])
 
   return (
