@@ -7,7 +7,7 @@ import Avatar from '@mui/material/Avatar';
 import styles from './Login.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import { fetchAuth, fetchRegister, selectIsAuth } from '../../redux/slices/auth';
+import { fetchRegister, selectIsAuth } from '../../redux/slices/auth';
 import { Navigate } from 'react-router-dom';
 
 export const Registration = () => {
