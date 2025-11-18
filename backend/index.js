@@ -3,7 +3,7 @@ import multer from 'multer'
 import mongoose from 'mongoose'
 import { registerValidation, loginValidation, postCreateValidation } from './validations.js'
 import { checkAuth, handleErrors } from './utils/index.js'
-import { getAll, create, update, remove, getOne } from './controllers/PostController.js'
+import { getAll, create, update, remove, getOne, getTags } from './controllers/PostController.js'
 import { getMe, login, register } from './controllers/UserController.js'
 import cors from 'cors';
 
@@ -39,7 +39,10 @@ app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
     })
 })
 
+app.get('/tags', getTags)
+
 app.get('/posts', getAll)
+app.get('/posts/tags', getTags)
 app.get('/post/:id', getOne)
 app.post('/posts', checkAuth, postCreateValidation, handleErrors, create)
 app.delete('/posts/:id', checkAuth, remove)
