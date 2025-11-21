@@ -1,11 +1,12 @@
 import express, { json } from 'express'
 import multer from 'multer'
 import mongoose from 'mongoose'
-import { registerValidation, loginValidation, postCreateValidation } from './validations.js'
+import { registerValidation, loginValidation, postCreateValidation, commentCreateValidation } from './validations.js'
 import { checkAuth, handleErrors } from './utils/index.js'
 import { getAll, create, update, remove, getOne, getTags, getPostsByTag, getPopularPosts } from './controllers/PostController.js'
 import { getMe, login, register } from './controllers/UserController.js'
 import cors from 'cors';
+import { createComment, getPostComments, getRandomComments } from './controllers/CommentsController.js'
 
 mongoose.connect('mongodb+srv://igormelnikov94_db_user:B3CClaZFwDYeXJMi@cluster0.7mmqj3e.mongodb.net/blog?appName=Cluster0',   
 )
@@ -48,6 +49,10 @@ app.get('/posts/popular', getPopularPosts)
 app.post('/posts', checkAuth, postCreateValidation, handleErrors, create)
 app.delete('/posts/:id', checkAuth, remove)
 app.patch('/posts/:id', checkAuth, postCreateValidation, handleErrors, update)
+
+app.post('/comments', checkAuth, commentCreateValidation, handleErrors, createComment)
+app.get('/comments/random', getRandomComments)
+app.get('/comments/post/:postId', getPostComments)
 
 app.listen(4444, (err) =>{
     if (err) {
