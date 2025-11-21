@@ -1,9 +1,10 @@
 import { useParams } from "react-router-dom"
 import { Container, Grid, Typography } from '@mui/material';
-import { Post, TagsBlock } from "../components";
+import { Post, TagsBlock } from "../../components";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { fetchPostsByTag, fetchTags } from "../redux/slices/postsSlice";
+import { fetchPostsByTag, fetchTags } from "../../redux/slices/postsSlice";
+import styles from './Tags.module.scss';
 
 export const Tags = () => {
     const { tagName } = useParams()
@@ -18,7 +19,7 @@ export const Tags = () => {
 
     return (
         <Container maxWidth='lg'>
-            <Typography variant="h3" component='h1' gutterBottom>
+            <Typography className={styles.title} variant="h3" component='h1' gutterBottom>
                 Посты с тегом: #{tagName}
             </Typography>
             <Grid container spacing={4}>
@@ -43,7 +44,7 @@ export const Tags = () => {
                         )
                     )}
                     {!isPostsLoading && posts.items.length === 0 && (
-                        <Typography variant="h6" color='textSecondary' >
+                        <Typography className={styles.title} variant="h6" color='textSecondary' >
                             Постов с тегом #{tagName} не найдено
                         </Typography>
                     )}

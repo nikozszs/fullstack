@@ -5,7 +5,7 @@ import { Home, FullPost, Registration, AddPost, Login } from "./pages";
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from "react";
 import { fetchAuthMe, selectIsAuth } from "./redux/slices/auth";
-import { Tags } from "./pages/Tags";
+import { Tags } from "./pages/Tags/Tags";
 
 function App() {
   const dispatch = useDispatch()
