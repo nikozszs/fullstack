@@ -38,6 +38,24 @@ export const getPostsByTag = async (req, res) => {
     }
 }
 
+export const getPopularPosts = async (req, res) => {
+    try {
+        const posts = await PostModel.find({ 
+            viewsCount: { $gte: 50 } 
+        })
+        .populate('user')
+        .sort({ viewsCount: -1 })
+        .exec()
+
+        res.json(posts)
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            message: "Не удалось получить популярные статьи"
+        })
+    }
+}
+
 export const getOne = async (req, res) => {
     try {
         const postId = req.params.id
