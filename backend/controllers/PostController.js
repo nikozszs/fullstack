@@ -2,7 +2,7 @@ import PostModel from '../models/Post.js'
 
 export const getAll = async (req, res) => {
     try {
-        const posts = await PostModel.find().populate('user').exec()
+        const posts = await PostModel.find().populate({ path: "user", select: ["name", "avatar"] }).exec()
         res.json(posts)
     } catch (err) {
         console.log(err)
@@ -21,6 +21,19 @@ export const getTags = async (req, res) => {
         console.log(err)
         res.status(500).json({
             message: "Не удалось получить теги"
+        })
+    }
+}
+
+export const getPostsByTag = async (req, res) => {
+    try {
+        const tagName = req.params.tagName;
+        const posts = await PostModel.find({ tags: tagName }).populate('user').exec()
+        res.json(posts)
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            message: "Не удалось найти посты по тегу"
         })
     }
 }
