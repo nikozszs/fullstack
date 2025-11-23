@@ -7,16 +7,11 @@ import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import Skeleton from "@mui/material/Skeleton";
-import { useSelector } from "react-redux";
-import { Index } from "./AddComment";
 import { Typography } from "@mui/material";
 
-export const CommentsBlock = ({ postId, items, isLoading = true }) => {
-  const userData = useSelector(state => state.auth.data)
-
+export const CommentsBlock = ({ children, items = [], isLoading = true }) => {
   return (
     <SideBlock title="Комментарии">
-      {userData && postId && <Index postId={postId} />}
       <List>
         {isLoading ? (
           [...Array(5)].map((_, index) => (
@@ -33,7 +28,7 @@ export const CommentsBlock = ({ postId, items, isLoading = true }) => {
               <Divider variant="inset" component="li" />
             </React.Fragment>
           ))
-        ) : items && items.length > 0 ? (
+        ) : items.length > 0 ? (
           items.map((obj, index) => (
             <React.Fragment key={index}>
               <ListItem alignItems="flex-start">
@@ -59,12 +54,13 @@ export const CommentsBlock = ({ postId, items, isLoading = true }) => {
                 variant="body1" 
                 color="textSecondary"
               >
-                Пока нет комментариев, но ты сможешь стать первым
+                Пока нет комментариев, но ты сможешь стать первым!
               </Typography>
             </div>
           </ListItem>
         )}
       </List>
+      {children} 
     </SideBlock>
   );
 };

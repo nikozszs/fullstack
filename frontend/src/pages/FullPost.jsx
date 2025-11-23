@@ -5,12 +5,17 @@ import { Index } from "../components/AddComment";
 import { CommentsBlock } from "../components/CommentsBlock";
 import axios from "../axios";
 import ReactMarkDown from 'react-markdown'
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCommentsInPost } from "../redux/slices/commentsSlice";
 
 export const FullPost = () => {
+  const userData = useSelector(state => state.auth.data)
+  const dispatch = useDispatch();
   const { id } = useParams()
+  const { postComments } = useSelector(state => state.comments);
   const [ data, setData ] = useState(null)
   const [ isLoading, setIsLoading ] = useState(true)
-  const [ comments, setComments] = useState([])
+  const comments = postComments.items || [];
 
   useEffect(() => {
     axios
@@ -25,17 +30,19 @@ export const FullPost = () => {
       .finally(() => {
         setIsLoading(false);
     });
-
-    if (id) {
-      axios
-        .get(`/comments/post/${id}`)
-        .then(res => setComments(res.data))
-        .catch(err => {
-          console.log(err)
-          setComments([])
-        })
-    }
   }, [id])
+
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchCommentsInPost(id))
+    }
+  }, [])
+
+  const handleCommentAdded = () => {
+    if (id) {
+      dispatch(fetchCommentsInPost(id))
+    }
+  }
 
 
   if (isLoading) {
@@ -55,15 +62,13 @@ export const FullPost = () => {
         tags={data.tags}
         isFullPost
       >
-        <p>
-          <ReactMarkDown children={data.text} />
-        </p>
+        <ReactMarkDown children={data.text} />
       </Post>
       <CommentsBlock
-        postId={id}
         items={comments}
+        isLoading={postComments.status === 'loading'}
       >
-        <Index />
+        <Index postId={id} onCommentAdded={handleCommentAdded} />
       </CommentsBlock>
     </>
   );

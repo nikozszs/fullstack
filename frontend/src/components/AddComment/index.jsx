@@ -1,14 +1,12 @@
 import React, { useState } from "react";
-
 import styles from "./AddComment.module.scss";
-
 import TextField from "@mui/material/TextField";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCreateComment } from "../../redux/slices/commentsSlice";
+import { fetchCommentsInPost, fetchCreateComment } from "../../redux/slices/commentsSlice";
 
-export const Index = ({postId}) => {
+export const Index = ({postId, onCommentAdded }) => {
   const dispatch = useDispatch();
   const userData = useSelector(state => state.auth.data);
   const [commentText, setCommentText] = useState('');
@@ -24,6 +22,10 @@ export const Index = ({postId}) => {
         postId
       })).unwrap();
       setCommentText('');
+
+      if (onCommentAdded) {
+        onCommentAdded()
+      }
     } catch (err) {
       console.error('Ошибка при отправке комментария:', err);
     } finally {

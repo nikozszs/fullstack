@@ -7,14 +7,17 @@ import { Post } from '../components/Post';
 import { TagsBlock } from '../components/TagsBlock';
 import { CommentsBlock } from '../components/CommentsBlock';
 import { fetchPosts, fetchPostsPopular, fetchTags } from '../redux/slices/postsSlice';
+import { fetchRandomComments } from '../redux/slices/commentsSlice'
 
 export const Home = () => {
   const dispatch = useDispatch()
   const { posts, tags } = useSelector(state => state.posts)
+  const { randomComments } = useSelector(state => state.comments)
   const userData = useSelector(state => state.auth.data)
   const [ activeTab, setActiveTab ] = useState(0)
   const isPostsLoading = posts.status === 'loading'
   const isTagsLoading = tags.status === 'loading'
+  const isCommentsLoading = randomComments.status === 'loading'
 
   useEffect(() => {
     if (activeTab === 0) {
@@ -23,6 +26,7 @@ export const Home = () => {
       dispatch(fetchPostsPopular())
     }
     dispatch(fetchTags())
+    dispatch(fetchRandomComments(5)) 
   }, [activeTab])
 
   const handleTabChange = (event, newValue) => setActiveTab(newValue)
@@ -30,11 +34,11 @@ export const Home = () => {
   return (
     <>
       <Tabs value={activeTab} 
-      onChange={handleTabChange}
-      style={{ marginBottom: 15 }} 
-      aria-label="basic tabs example">
-        <Tab label="Новые" />
-        <Tab label="Популярные" />
+        onChange={handleTabChange}
+        style={{ marginBottom: 15 }} 
+        aria-label="basic tabs example">
+          <Tab label="Новые" />
+          <Tab label="Популярные" />
       </Tabs>
       <Grid container spacing={4}>
         <Grid xs={8} item>
@@ -48,7 +52,7 @@ export const Home = () => {
                 user={post.user}
                 createdAt={post.createdAt}
                 viewsCount={post.viewsCount}
-                commentsCount={3}
+                commentsCount={post.commentsCount}
                 tags={post.tags}
                 isEditable={ userData?._id === post.user._id}
                 />
@@ -57,25 +61,7 @@ export const Home = () => {
         </Grid>
         <Grid xs={4} item>
           <TagsBlock items={tags.items} isLoading={isTagsLoading} />
-          <CommentsBlock
-            items={[
-              {
-                user: {
-                  fullName: 'Вася Пупкин',
-                  avatarUrl: 'https://mui.com/static/images/avatar/1.jpg',
-                },
-                text: 'Это тестовый комментарий',
-              },
-              {
-                user: {
-                  fullName: 'Иван Иванов',
-                  avatarUrl: 'https://mui.com/static/images/avatar/2.jpg',
-                },
-                text: 'When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top',
-              },
-            ]}
-            isLoading={false}
-          />
+          <CommentsBlock items={randomComments.items} isLoading={isCommentsLoading} showAddComment={false} />
         </Grid>
       </Grid>
     </>

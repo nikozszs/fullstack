@@ -2,7 +2,11 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from '../../axios'
 
 const initialState = {
-    data: {
+    postComments: {
+        items: [],
+        status: 'loading'
+    },
+    randomComments: {
         items: [],
         status: 'loading'
     }
@@ -32,37 +36,37 @@ const commentsSlice = createSlice({
     extraReducers: {
         // получение рандомных комментариев
         [fetchRandomComments.pending]: (state) => {
-            state.data.status = 'loading'
-            state.data.items = []
+            state.randomComments.status = 'loading'
+            state.randomComments.items = []
         },
         [fetchRandomComments.fulfilled]: (state, action) => {
-            state.data.status = 'loaded'
-            state.data.items = action.payload
+            state.randomComments.status = 'loaded'
+            state.randomComments.items = action.payload
         },
         [fetchRandomComments.rejected]: (state) => {
-            state.data.status = 'error'
-            state.data.items = []
+            state.randomComments.status = 'error'
+            state.randomComments.items = []
         },
         // отправление созданного комментария
         [fetchCreateComment.fulfilled]: (state, action) => {
-            state.data.items.unshift(action.payload);
+            state.postComments.items.unshift(action.payload);
         },
         [fetchCreateComment.rejected]: (state) => {
-            state.data.status = 'error'
-            state.data.items = []
+            state.postComments.status = 'error'
+            state.postComments.items = []
         },
         // получение комментариев под постом
         [fetchCommentsInPost.pending]: (state) => {
-            state.data.status = 'loading'
-            state.data.items = []
+            state.postComments.status = 'loading'
+            state.postComments.items = []
         },
         [fetchCommentsInPost.fulfilled]: (state, action) => {
-            state.data.status = 'loaded'
-            state.data.items = action.payload
+            state.postComments.status = 'loaded'
+            state.postComments.items = action.payload
         },
         [fetchCommentsInPost.rejected]: (state) => {
-            state.data.status = 'error'
-            state.data.items = []
+            state.postComments.status = 'error'
+            state.postComments.items = []
         }
     }
 })

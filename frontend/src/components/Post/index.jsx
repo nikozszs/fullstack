@@ -65,15 +65,17 @@ export const Post = ({
           <h2 className={clsx(styles.title, { [styles.titleFull]: isFullPost })}>
             {isFullPost ? title : <Link to={`/posts/${id}`}>{title}</Link>}
           </h2>
-          <ul className={styles.tags}>
-            {tags.map((name) => (
-              <li key={name}>
-                <Link key={name} to={`/tags/${name}`} style={{ textDecoration: 'none', marginRight: 8 }} >
-                  #{name}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          {tags && tags.length > 0 && (
+            <ul className={styles.tags}>
+              {tags.map((name) => (
+                <li key={name}>
+                  <Link key={name} to={`/tags/${name}`} style={{ textDecoration: 'none', marginRight: 8 }} >
+                    #{name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
           {children && <div className={styles.content}>{children}</div>}
           <ul className={styles.postDetails}>
             <li>
