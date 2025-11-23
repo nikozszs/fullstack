@@ -37,13 +37,6 @@ export const getPostComments = async (req, res) => {
 export const createComment = async (req, res) => {
     try {
         const { text, postId } = req.body
-        const post = await PostModel.findById(postId)
-        if (!post) {
-            return res.status(404).json({
-                message: 'Статья не найдена'
-            })
-        }
-
         const comment = new CommentModel({
             text,
             user: req.userId,

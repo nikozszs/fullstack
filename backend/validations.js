@@ -20,6 +20,6 @@ export const postCreateValidation = [
 ];
 
 export const commentCreateValidation = [
-    body('text', 'Введите текст комментария').isLength({ min: 10 }).isString(),
+    body('text', 'Введите текст комментария').isLength({ min: 3 }).isString(),
     body('imageUrl', 'Неверная ссылка на изображение').optional().isString()
 ];

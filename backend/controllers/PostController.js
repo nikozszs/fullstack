@@ -2,7 +2,10 @@ import PostModel from '../models/Post.js'
 
 export const getAll = async (req, res) => {
     try {
-        const posts = await PostModel.find().populate({ path: "user", select: ["name", "avatar"] }).exec()
+        const posts = await PostModel.find()
+            .populate({ path: "user", select: ["name", "avatar"] })
+            .exec()
+
         res.json(posts)
     } catch (err) {
         console.log(err)
