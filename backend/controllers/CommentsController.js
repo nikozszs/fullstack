@@ -36,22 +36,21 @@ export const getPostComments = async (req, res) => {
 
 export const createComment = async (req, res) => {
     try {
-        const { text, postId } = req.body
-        const comment = new CommentModel({
-            text,
-            user: req.userId,
-            post: postId
+        const doc = new CommentModel({
+            text: req.body.text,
+            post: req.body.postId,
+            user: req.userId, 
         })
+        const comment = await doc.save()
 
-        await comment.save()
-
-        await PostModel.findByIdAndUpdate(postId, {
-            $inc: { commentsCount: 1}
-        })
+        await PostModel.findByIdAndUpdate(
+            req.body.postId, 
+            { $inc: { commentsCount: 1}}
+        )
 
         const populatedComment = await CommentModel.findById(comment._id)
-            .populate('user', ['fullName', 'avatarUrl'])
-            .populate('post', ['title'])
+            .populate('user')
+            .exec()
 
         res.json(populatedComment)
     } catch (err) {

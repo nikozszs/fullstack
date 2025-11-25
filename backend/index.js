@@ -43,12 +43,14 @@ app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
 app.get('/tags', getTags)
 app.get('/posts/tags/:tagName', getPostsByTag)
 
+
 app.get('/posts', getAll)
 app.get('/post/:id', getOne)
 app.get('/posts/popular', getPopularPosts)
 app.post('/posts', checkAuth, postCreateValidation, handleErrors, create)
 app.delete('/posts/:id', checkAuth, remove)
 app.patch('/posts/:id', checkAuth, postCreateValidation, handleErrors, update)
+
 
 app.post('/comments', checkAuth, commentCreateValidation, handleErrors, createComment)
 app.get('/comments/random', getRandomComments)

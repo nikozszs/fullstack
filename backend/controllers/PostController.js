@@ -44,10 +44,10 @@ export const getPostsByTag = async (req, res) => {
 export const getPopularPosts = async (req, res) => {
     try {
         const posts = await PostModel.find({ 
-            viewsCount: { $gte: 50 } 
+            viewsCount: { $gte: 25 } 
         })
         .populate('user')
-        .sort({ viewsCount: -1 })
+        .sort({ viewsCount: -1, commentsCount: -1 })
         .exec()
 
         res.json(posts)
