@@ -7,9 +7,9 @@ import axios from "../axios";
 import ReactMarkDown from 'react-markdown'
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCommentsInPost } from "../redux/slices/commentsSlice";
+import { formatDate } from "../utils";
 
 export const FullPost = () => {
-  const userData = useSelector(state => state.auth.data)
   const dispatch = useDispatch();
   const { id } = useParams()
   const { postComments } = useSelector(state => state.comments);
@@ -56,7 +56,7 @@ export const FullPost = () => {
         title={data.title}
         imageUrl={data.imageUrl ? `http://localhost:4444${data.imageUrl}` : ''}
         user={data.user}
-        createdAt={data.createdAt}
+        createdAt={formatDate(data.createdAt)}
         viewsCount={data.viewsCount}
         commentsCount={data.commentsCount || 0}
         tags={data.tags}

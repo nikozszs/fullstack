@@ -8,6 +8,7 @@ import { TagsBlock } from '../components/TagsBlock';
 import { CommentsBlock } from '../components/CommentsBlock';
 import { fetchPosts, fetchPostsPopular, fetchTags } from '../redux/slices/postsSlice';
 import { fetchRandomComments } from '../redux/slices/commentsSlice'
+import { formatDate} from '../utils';
 
 export const Home = () => {
   const dispatch = useDispatch()
@@ -50,9 +51,9 @@ export const Home = () => {
                 title={post.title}
                 imageUrl={post.imageUrl ? `http://localhost:4444${post.imageUrl}` : ''}
                 user={post.user}
-                createdAt={post.createdAt}
+                createdAt={formatDate(post.createdAt)}
                 viewsCount={post.viewsCount}
-                commentsCount={post.commentsCount}
+                commentsCount={(post.commentsCount)}
                 tags={post.tags}
                 isEditable={ userData?._id === post.user._id}
                 />

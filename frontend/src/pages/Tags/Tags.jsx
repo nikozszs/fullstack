@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { fetchPostsByTag, fetchTags } from "../../redux/slices/postsSlice";
 import styles from './Tags.module.scss';
+import { formatDate } from "../../utils";
 
 export const Tags = () => {
     const { tagName } = useParams()
@@ -36,9 +37,9 @@ export const Tags = () => {
                                 title={obj.title}
                                 imageUrl={obj.imageUrl}
                                 user={obj.user}
-                                createdAt={obj.createdAt}
+                                createdAt={formatDate(obj.createdAt)}
                                 viewsCount={obj.viewsCount}
-                                commentsCount={3}
+                                commentsCount={obj.commentsCount}
                                 tags={obj.tags}
                                 isEditable={false}/>
                         )

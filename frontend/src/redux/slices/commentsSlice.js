@@ -29,6 +29,17 @@ export const fetchCommentsInPost = createAsyncThunk('posts/fetchPostsByTag', asy
     return data
 })
 
+export const fetchCommentsCountForPost = createAsyncThunk(
+    'comments/fetchCommentsCountForPost',
+    async (postId) => {
+        const { data } = await axios.get(`/comments/post/${postId}`);
+        return {
+            postId,
+            count: data.length
+        };
+    }
+);
+
 const commentsSlice = createSlice({
     name: 'comments',
     initialState,
@@ -67,6 +78,10 @@ const commentsSlice = createSlice({
         [fetchCommentsInPost.rejected]: (state) => {
             state.postComments.status = 'error'
             state.postComments.items = []
+        },
+        // получение комментариев под постом
+        [fetchCommentsCountForPost.fulfilled]: (state, action) => {
+            const { postId, count } = action.payload;
         }
     }
 })
