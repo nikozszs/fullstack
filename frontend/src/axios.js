@@ -1,8 +1,7 @@
 import axios from 'axios'
 
 const instance = axios.create({
-    // baseURL: 'http://localhost:4444',
-    baseURL: 'https://recipe-blog-l3jp.onrender.com',
+    baseURL: process.env.REACT_APP_API_URL || 'http://localhost:4444',
 })
 
 instance.interceptors.request.use((config) => {

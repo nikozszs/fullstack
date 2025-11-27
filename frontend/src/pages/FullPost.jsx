@@ -16,6 +16,8 @@ export const FullPost = () => {
   const [ data, setData ] = useState(null)
   const [ isLoading, setIsLoading ] = useState(true)
   const comments = postComments.items || [];
+  const API_URL = process.env.REACT_APP_API_URL || '';
+
 
   useEffect(() => {
     axios
@@ -54,7 +56,7 @@ export const FullPost = () => {
       <Post
         id={data._id}
         title={data.title}
-        imageUrl={data.imageUrl ? `http://localhost:4444${data.imageUrl}` : ''}
+        imageUrl={data.imageUrl}
         user={data.user}
         createdAt={formatDate(data.createdAt)}
         viewsCount={data.viewsCount}
