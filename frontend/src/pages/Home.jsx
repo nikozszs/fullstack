@@ -8,7 +8,7 @@ import { TagsBlock } from '../components/TagsBlock';
 import { CommentsBlock } from '../components/CommentsBlock';
 import { fetchPosts, fetchPostsPopular, fetchTags } from '../redux/slices/postsSlice';
 import { fetchRandomComments } from '../redux/slices/commentsSlice'
-import { formatDate} from '../utils';
+import { checkEnvironment, formatDate} from '../utils';
 
 export const Home = () => {
   const dispatch = useDispatch()
@@ -27,6 +27,7 @@ export const Home = () => {
       dispatch(fetchPostsPopular())
     }
     dispatch(fetchTags())
+    checkEnvironment()
     dispatch(fetchRandomComments(5)) 
   }, [activeTab])
 
@@ -49,7 +50,7 @@ export const Home = () => {
                 <Post
                 id={post._id}
                 title={post.title}
-                imageUrl={post.imageUrl ? `http://localhost:4444${post.imageUrl}` : ''}
+                imageUrl={post.imageUrl}
                 user={post.user}
                 createdAt={formatDate(post.createdAt)}
                 viewsCount={post.viewsCount}

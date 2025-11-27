@@ -4,7 +4,7 @@ import TextField from "@mui/material/TextField";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCommentsInPost, fetchCreateComment } from "../../redux/slices/commentsSlice";
+import { fetchCreateComment } from "../../redux/slices/commentsSlice";
 
 export const Index = ({postId, onCommentAdded }) => {
   const dispatch = useDispatch();

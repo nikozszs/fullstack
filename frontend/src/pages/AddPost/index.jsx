@@ -9,6 +9,7 @@ import styles from './AddPost.module.scss';
 import { selectIsAuth } from '../../redux/slices/auth';
 import { useSelector } from 'react-redux';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { getImageUrl } from '../../utils';
 
 export const AddPost = () => {
   const {id} = useParams()
@@ -104,7 +105,7 @@ export const AddPost = () => {
         <Button variant="contained" color="error" onClick={onClickRemoveImage}>
           Удалить
         </Button>
-        <img className={styles.image} src={`http://localhost:4444${imageUrl}`} alt="Uploaded" />
+        <img className={styles.image} src={getImageUrl(imageUrl)}  alt="Uploaded" />
         </>
       )}
       <br />
