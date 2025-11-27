@@ -25,9 +25,3 @@ export const getImageUrl = (imagePath) => {
     
     return `${getApiUrl()}${imagePath}`;
 };
-
-export const checkEnvironment = () => {
-    console.log('NODE_ENV:', process.env.NODE_ENV);
-    console.log('REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
-    console.log('All env vars:', process.env);
-};

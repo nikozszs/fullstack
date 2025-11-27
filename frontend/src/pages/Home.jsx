@@ -27,7 +27,6 @@ export const Home = () => {
       dispatch(fetchPostsPopular())
     }
     dispatch(fetchTags())
-    checkEnvironment()
     dispatch(fetchRandomComments(5)) 
   }, [activeTab])
 
