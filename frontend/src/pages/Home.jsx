@@ -22,6 +22,7 @@ export const Home = () => {
 
   useEffect(() => {
     console.log('API URL:', process.env.REACT_APP_API_URL);
+    console.log('🔄 Home component mounted, fetching posts...');
     if (activeTab === 0) {
       dispatch(fetchPosts())
     } else {
@@ -29,7 +30,7 @@ export const Home = () => {
     }
     dispatch(fetchTags())
     dispatch(fetchRandomComments(5)) 
-  }, [activeTab, dispatch])
+  }, [activeTab])
 
   const handleTabChange = (event, newValue) => setActiveTab(newValue)
 
