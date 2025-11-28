@@ -95,11 +95,10 @@ app.post('/comments', checkAuth, commentCreateValidation, handleErrors, createCo
 app.get('/comments/random', getRandomComments)
 app.get('/comments/post/:postId', getPostComments)
 
-const PORT = process.env.PORT || 4444;
-app.listen(PORT, '0.0.0.0', (err) => {
+app.listen(4444, (err) => {
     if (err) {
         return console.log(err)
     }
 
-    console.log(`Server OK on port ${PORT}`)
+    console.log(`Server OK`)
 })
