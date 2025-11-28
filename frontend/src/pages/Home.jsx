@@ -21,6 +21,7 @@ export const Home = () => {
   const isCommentsLoading = randomComments.status === 'loading'
 
   useEffect(() => {
+    console.log('API URL:', process.env.REACT_APP_API_URL);
     if (activeTab === 0) {
       dispatch(fetchPosts())
     } else {
@@ -28,7 +29,7 @@ export const Home = () => {
     }
     dispatch(fetchTags())
     dispatch(fetchRandomComments(5)) 
-  }, [activeTab])
+  }, [activeTab, dispatch])
 
   const handleTabChange = (event, newValue) => setActiveTab(newValue)
 
