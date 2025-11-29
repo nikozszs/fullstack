@@ -2,7 +2,7 @@ import axios from 'axios'
 import { getApiUrl } from './utils'
 
 const instance = axios.create({
-    baseURL: getApiUrl,
+    baseURL: getApiUrl(),
 })
 
 instance.interceptors.request.use((config) => {

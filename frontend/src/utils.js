@@ -13,7 +13,7 @@ export const formatDate = (dateString) => {
 };
 
 export const getApiUrl = () => {
-    return process.env.REACT_APP_API_URL || process.env.PORT;
+    return process.env.REACT_APP_API_URL;
 };
 
 export const getImageUrl = (imagePath) => {

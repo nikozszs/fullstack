@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from "react";
 import { fetchAuthMe, selectIsAuth } from "./redux/slices/auth";
 import { Tags } from "./pages/Tags/Tags";
+import { getApiUrl } from "./utils";
 
 function App() {
   const dispatch = useDispatch()
@@ -14,6 +15,10 @@ function App() {
   useEffect(() => {
     dispatch(fetchAuthMe())
   }, [])
+
+  console.log('🔧 API URL:', getApiUrl());
+  console.log('🔧 REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
+  console.log('🔧 NODE_ENV:', process.env.NODE_ENV);
   return (
     <>
       <Header />
