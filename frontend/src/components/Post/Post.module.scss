@@ -32,7 +32,7 @@ $blue: #4361ee;
   object-fit: cover;
 
   &Full {
-    min-height: 300px;
+    max-height: 60vh;
     height: 100%;
   }
 }

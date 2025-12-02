@@ -8,7 +8,7 @@ import { TagsBlock } from '../components/TagsBlock';
 import { CommentsBlock } from '../components/CommentsBlock';
 import { fetchPosts, fetchPostsPopular, fetchTags } from '../redux/slices/postsSlice';
 import { fetchRandomComments } from '../redux/slices/commentsSlice'
-import { formatDate} from '../utils';
+import { formatDate } from '../utils';
 
 export const Home = () => {
   const dispatch = useDispatch()

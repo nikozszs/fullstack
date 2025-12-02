@@ -11,6 +11,7 @@ import { UserInfo } from '../UserInfo';
 import { PostSkeleton } from './Skeleton';
 import { useDispatch } from 'react-redux';
 import { fetchRemovePost } from '../../redux/slices/postsSlice';
+import { getImageUrl } from '../../utils';
 
 export const Post = ({
   id,
@@ -55,7 +56,7 @@ export const Post = ({
       {imageUrl && (
         <img
           className={clsx(styles.image, { [styles.imageFull]: isFullPost })}
-          src={imageUrl}
+          src={getImageUrl(imageUrl)}
           alt={title}
         />
       )}

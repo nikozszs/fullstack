@@ -16,8 +16,6 @@ export const FullPost = () => {
   const [ data, setData ] = useState(null)
   const [ isLoading, setIsLoading ] = useState(true)
   const comments = postComments.items || [];
-  const API_URL = process.env.REACT_APP_API_URL || '';
-
 
   useEffect(() => {
     axios
