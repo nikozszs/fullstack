@@ -9,6 +9,10 @@ import { CommentsBlock } from '../components/CommentsBlock';
 import { fetchPosts, fetchPostsPopular, fetchTags } from '../redux/slices/postsSlice';
 import { fetchRandomComments } from '../redux/slices/commentsSlice'
 import { formatDate } from '../utils';
+import { MobileSidebar } from '../components/MobileSidebar/MobileSidebar';
+import styles from './Home.module.scss'
+import { useTheme } from '@emotion/react';
+import { useMediaQuery } from '@mui/material';
 
 export const Home = () => {
   const dispatch = useDispatch()
@@ -19,6 +23,8 @@ export const Home = () => {
   const isPostsLoading = posts.status === 'loading'
   const isTagsLoading = tags.status === 'loading'
   const isCommentsLoading = randomComments.status === 'loading'
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
   useEffect(() => {
     if (activeTab === 0) {
@@ -34,15 +40,26 @@ export const Home = () => {
 
   return (
     <>
-      <Tabs value={activeTab} 
-        onChange={handleTabChange}
-        style={{ marginBottom: 15 }} 
-        aria-label="basic tabs example">
-          <Tab label="Новые" />
-          <Tab label="Популярные" />
-      </Tabs>
+      <div className={styles.homeHeader}>
+        <Tabs value={activeTab} 
+          onChange={handleTabChange}
+          style={{ marginBottom: 15 }} 
+          aria-label="basic tabs example">
+            <Tab label="Новые" />
+            <Tab label="Популярные" />
+        </Tabs>
+
+        {isMobile && (
+          <MobileSidebar tagsItems={tags.items} 
+            commentsItems={randomComments.items}
+            commentsLoading={isCommentsLoading}
+            tagsLoading={isTagsLoading}
+          />
+        )}
+      </div>
+
       <Grid container spacing={4}>
-        <Grid xs={8} item>
+        <Grid xs={12} md={8} item>
           {isPostsLoading
             ? [...Array(5)].map((_, index) => <Post key={index} isLoading />)
             : posts.items.map(post => (
@@ -60,10 +77,13 @@ export const Home = () => {
               ))
           }
         </Grid>
-        <Grid xs={4} item>
-          <TagsBlock items={tags.items} isLoading={isTagsLoading} />
-          <CommentsBlock items={randomComments.items} isLoading={isCommentsLoading} showAddComment={false} />
-        </Grid>
+
+        {!isMobile && (
+          <Grid md={4} item>
+            <TagsBlock items={tags.items} isLoading={isTagsLoading} />
+            <CommentsBlock items={randomComments.items} isLoading={isCommentsLoading} showAddComment={false} />
+          </Grid>
+        )}
       </Grid>
     </>
   );
