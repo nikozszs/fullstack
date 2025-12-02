@@ -46,25 +46,7 @@
 }
 
 .content {
-    max-height: calc(100vh - 120px);
-    overflow-y: auto;
-    &::-webkit-scrollbar {
-        width: 6px;
-      }
-      
-      &::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 3px;
-      }
-      
-      &::-webkit-scrollbar-thumb {
-        background: #4361ee;
-        border-radius: 3px;
-      }
-      
-      /* Для Firefox */
-      scrollbar-width: thin;
-      scrollbar-color: #4361ee #f1f1f1;
+    max-height: calc(100vh - 60px);
 }
 
 .tagsSection {

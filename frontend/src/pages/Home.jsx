@@ -24,7 +24,7 @@ export const Home = () => {
   const isTagsLoading = tags.status === 'loading'
   const isCommentsLoading = randomComments.status === 'loading'
   const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
   useEffect(() => {
     if (activeTab === 0) {
