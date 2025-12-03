@@ -1,0 +1,54 @@
+.root {
+  width: 400px;
+  padding: 30px;
+  border: 1px solid #dedede;
+  margin: 25px auto;
+}
+
+.field {
+  margin-bottom: 18px !important;
+}
+
+.title {
+  text-align: center !important;
+  font-weight: bold !important;
+  margin-bottom: 20px !important;
+}
+
+.avatarSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.avatarWrapper {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 5px;
+}
+
+.uploadButton {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+    &:hover {
+      background-color: #f5f5f5;
+    }
+}
+
+.uploadHint {
+  text-align: center;
+}
+
+.loader {
+  margin-top: 10px;
+}
+
+.errorAlert {
+  margin-top: 10px;
+  width: 100%;
+}

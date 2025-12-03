@@ -95,11 +95,11 @@ export const AddPost = () => {
   }
 
   return (
-    <Paper style={{ padding: 30 }}>
+    <Paper style={{ padding: 40 }}>
       <Button 
-      onClick={() => inputFileRef.current.click()} 
-      variant="outlined" 
-      size="large"
+        onClick={() => inputFileRef.current.click()} 
+        variant="outlined" 
+        size="large"
       >
         Загрузить превью
       </Button>
@@ -120,6 +120,7 @@ export const AddPost = () => {
       )}
       <br />
       <br />
+      
       <TextField
         classes={{ root: styles.title }}
         variant="standard"

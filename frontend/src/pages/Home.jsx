@@ -11,7 +11,7 @@ import { fetchRandomComments } from '../redux/slices/commentsSlice'
 import { formatDate } from '../utils';
 import { MobileSidebar } from '../components/MobileSidebar/MobileSidebar';
 import styles from './Home.module.scss'
-import { useTheme } from '@emotion/react';
+import { useTheme } from '@mui/material/styles';
 import { useMediaQuery } from '@mui/material';
 
 export const Home = () => {
@@ -64,6 +64,7 @@ export const Home = () => {
             ? [...Array(5)].map((_, index) => <Post key={index} isLoading />)
             : posts.items.map(post => (
                 <Post
+                key={post._id}
                 id={post._id}
                 title={post.title}
                 imageUrl={post.imageUrl}
