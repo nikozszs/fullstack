@@ -21,6 +21,7 @@ export const Registration = () => {
   const [ isLoading, setIsLoading ] = useState(false)
   const [ uploadError, setUploadError ] = useState('')
   const [ selectedFile, setSelectedFile ] = useState(null)
+  const [ registerError, setRegisterError ] = useState('')
 
   const { register, handleSubmit, formState: { errors, isValid } 
   } = useForm({
@@ -32,41 +33,7 @@ export const Registration = () => {
     mode: 'onChange'
   })
 
-  const handleFileUpload = async (event) => {
-    try {
-      const file = event.target.files[0]
-
-      if (!file) return
-
-      if (!file.type.match('image.*')) {
-        setUploadError('Пожалуйста, выберите аватарку')
-        return
-      }
-
-      if (file.size > 3 * 1024 * 1024) {
-        setUploadError('Размер файла не должен превышать 3МВ')
-        return
-      }
-
-      setIsLoading(true)
-      setUploadError('')
-
-      const formData = new FormData()
-      formData.append('image', file)
-
-      const { data } = await axios.post('/upload', formData)
-      setAvatarUrl(data.url)
-      setSelectedFile(file)
-
-    } catch (err) {
-      console.log(err)
-      setUploadError(err.response?.data?.message || 'Ошибка при загрузке изображения')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleFileSelect = (event) => {
+  const handleFileSelect = async (event) => {
     const file = event.target.files[0]
 
     if (!file) return
@@ -89,18 +56,24 @@ export const Registration = () => {
 
   const onSubmit = async (values) => {
     try {
-      setIsLoading(true);
-      
-      const formData = new FormData()
-      formData.append('email', values.email)
-      formData.append('password', values.password)
-      formData.append('fullName', values.fullName)
+      setIsLoading(true)
+      setRegisterError('')
 
-      if (selectedFile) {
-        formData.append('avatar', selectedFile)
+      const registerData = {
+        email: values.email,
+        password: values.password,
+        fullName: values.fullName
       }
 
-      const {data} = await axios(fetchRegister(values))
+      if (selectedFile) {
+        const uploadFormData = new FormData()
+        uploadFormData.append('image', selectedFile)
+
+        const uploadResponse = await axios.post('/upload', uploadFormData)
+        registerData.avatarUrl = uploadResponse.data.url
+      }
+
+      const data = await dispatch(fetchRegister(registerData))
   
       if (!data.payload) {
         return alert('Не удалось зарегистрироваться')
@@ -110,7 +83,10 @@ export const Registration = () => {
         window.localStorage.setItem('token', data.payload.token)
       }
     } catch (err) {
-      console.log('Ошибка регистрации:', err)
+      console.log(err)
+      setRegisterError(err.message || 'Не удалось зарегистрироваться')
+    } finally {
+      setIsLoading(false)
     }
   }
   
@@ -194,7 +170,14 @@ export const Registration = () => {
           className={styles.field} 
           label="E-Mail"
           />
-        <Button disabled={!isValid} 
+
+          {registerError && (
+            <Alert severity="error" sx={{ mt: 2, mb: 2 }}>
+              {registerError}
+            </Alert>
+          )}
+
+        <Button disabled={!isValid || isLoading} 
           type='submit' 
           size="large" 
           variant="contained" 
