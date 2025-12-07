@@ -22,6 +22,8 @@ export const Post = ({
   viewsCount,
   commentsCount,
   tags,
+  avatarUrl,
+  fullName,
   children,
   isFullPost,
   isLoading,
@@ -38,6 +40,9 @@ export const Post = ({
       dispatch(fetchRemovePost(id))
     }
   };
+
+  const userAvatarUrl = avatarUrl || user?.avatarUrl;
+  const userFullName = fullName || user?.fullName;
 
   return (
     <div className={clsx(styles.root, { [styles.rootFull]: isFullPost })}>
@@ -61,7 +66,9 @@ export const Post = ({
         />
       )}
       <div className={styles.wrapper}>
-        <UserInfo {...user} additionalText={createdAt} />
+        <UserInfo avatarUrl={userAvatarUrl} 
+          fullName={userFullName} 
+          additionalText={createdAt} />
         <div className={styles.indention}>
           <h2 className={clsx(styles.title, { [styles.titleFull]: isFullPost })}>
             {isFullPost ? title : <Link to={`/posts/${id}`}>{title}</Link>}

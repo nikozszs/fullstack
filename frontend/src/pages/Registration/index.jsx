@@ -62,7 +62,8 @@ export const Registration = () => {
       const registerData = {
         email: values.email,
         password: values.password,
-        fullName: values.fullName
+        fullName: values.fullName,
+        avatarUrl: values.avatarUrl
       }
 
       if (selectedFile) {
@@ -103,7 +104,7 @@ export const Registration = () => {
       <div className={styles.avatarSection}>
         <div className={styles.avatarWrapper}>
           <Avatar sx={{ width: 100, height: 100 }}
-            src={avatarUrl} 
+            src={avatarUrl || '/noavatar.png'} 
             alt='Avatar Preview'
             >
               {!avatarUrl && '?'}

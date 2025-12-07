@@ -69,6 +69,8 @@ export const Home = () => {
                 title={post.title}
                 imageUrl={post.imageUrl}
                 user={post.user}
+                avatarUrl={post.user?.avatarUrl}
+                fullName={post.user?.fullName}
                 createdAt={formatDate(post.createdAt)}
                 viewsCount={post.viewsCount}
                 commentsCount={(post.commentsCount)}
