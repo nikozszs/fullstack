@@ -63,14 +63,14 @@ export const Registration = () => {
         email: values.email,
         password: values.password,
         fullName: values.fullName,
-        avatarUrl: values.avatarUrl
+        avatarUrl: '/noavatar.png'
       }
 
       if (selectedFile) {
         const uploadFormData = new FormData()
-        uploadFormData.append('image', selectedFile)
+        uploadFormData.append('avatar', selectedFile)
 
-        const uploadResponse = await axios.post('/upload', uploadFormData)
+        const uploadResponse = await axios.post('/upload-avatar', uploadFormData)
         registerData.avatarUrl = uploadResponse.data.url
       }
 

@@ -19,7 +19,7 @@ export const AddPost = () => {
   const [text, setText] = React.useState('');
   const [title, setTitle] = React.useState('');
   const [tags, setTags] = React.useState('');
-  const [imageUrl, setImageUrl] = React.useState('');
+  const [image, setImage] = React.useState('');
   const inputFileRef = useRef(null)
   const isEditing = Boolean(id)
 
@@ -29,36 +29,42 @@ export const AddPost = () => {
       const file = event.target.files[0]
       formData.append('image', file)
       const { data } = await axios.post('/upload', formData)
-      setImageUrl(data.url)
+      setImage(data.url)
     } catch (err) {
       console.log(err)
     }
   };
 
   const onClickRemoveImage = () => {
-    setImageUrl('')
+    setImage('')
   };
 
   const onChange = React.useCallback((value) => {
     setText(value);
   }, []);
 
-  const onSubmit = async () => {
+  const onSubmit = async (event) => {
+    event.preventDefault()
     try {
       setIsLoading(true)
-      const fields = {
+      const postData = {
         title,
-        imageUrl,
+        text,
         tags,
-        text
-      }
+        imageUrl: image
+      };
 
-      const { data } = isEditing 
-      ? await axios.patch(`/posts/${id}`, fields) 
-      : await axios.post('/posts', fields);
+      console.log('Отправляем данные:', postData);
 
-      const _id = isEditing ? id : data._id;
-      navigate(`/posts/${_id}`)
+      if (image) {
+        const formData = new FormData();
+        formData.append('image', image);
+        
+        const uploadResponse = await axios.post('/upload', formData);
+        postData.image = uploadResponse.data.url;
+    }
+
+    await axios.post('/posts', postData);
     } catch (err) {
       console.log(err)
     }
@@ -69,7 +75,7 @@ export const AddPost = () => {
       axios.get(`post/${id}`).then(({data}) => {
         setTitle(data.title)
         setText(data.text)
-        setImageUrl(data.imageUrl)
+        setImage(data.image)
         setTags(data.tags.join(','))
       }).catch (err => console.log(err))
     }
@@ -104,7 +110,7 @@ export const AddPost = () => {
         Загрузить превью
       </Button>
       <input ref={inputFileRef} type="file" onChange={handleChangeFile} hidden />
-      {imageUrl && (
+      {image && (
         <>
         <Button 
         variant="contained" 
@@ -115,7 +121,7 @@ export const AddPost = () => {
         >
           Удалить
         </Button>
-        <img className={styles.image} src={getImageUrl(imageUrl)}  alt="Uploaded" />
+        <img className={styles.image} src={getImageUrl(image)}  alt="Uploaded" />
         </>
       )}
       <br />
