@@ -9,10 +9,8 @@ import cors from 'cors';
 import { createComment, getPostComments, getRandomComments } from './controllers/CommentsController.js'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import fs from 'fs';
 import { uploadFile } from './controllers/UploadController.js'
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 mongoose.connect('mongodb+srv://igormelnikov94_db_user:B3CClaZFwDYeXJMi@cluster0.7mmqj3e.mongodb.net/blog?appName=Cluster0',   
 )
@@ -21,35 +19,23 @@ mongoose.connect('mongodb+srv://igormelnikov94_db_user:B3CClaZFwDYeXJMi@cluster0
 
 const app = express()
 
-const storage = multer.diskStorage({
-    destination: (_, __, cb) => {
-        cb(null, 'uploads')
-    },
-    filename: (_, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-        const fileExtension = path.extname(file.originalname)
-        const fileName = uniqueSuffix + fileExtension
-        cb(null, fileName)
-    }
-})
+const storage = multer.memoryStorage()
 
 const upload = multer({ 
-    storage,
+    storage: storage,
     limits: {
         fileSize: 5 * 1024 * 1024 // 5MB лимит
-    },
-    fileFilter: (_, file, cb) => {
-        if (file.mimetype.startsWith('image/')) {
-            cb(null, true);
-        } else {
-            cb(new Error('Можно загружать только изображения'), false);
-        }
     }
 })
 
 app.use(express.json())
 app.use(cors());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
+
+const uploadsDir = '/tmp/uploads';
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+}
+app.use('/uploads', express.static(uploadsDir))
 
 app.get('/favicon.ico', (req, res) => {
     res.status(204).end()
@@ -69,7 +55,7 @@ app.post('/auth/login', loginValidation, handleErrors, login)
 app.post('/auth/register', registerValidation, handleErrors, register)
 
 // Маршрут загрузки файлов
-app.post('/upload', checkAuth, upload.single('image'), uploadFile)
+app.post('/upload', upload.single('image'), uploadFile)
 
 // Маршруты тегов
 app.get('/tags', getTags)
