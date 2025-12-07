@@ -59,14 +59,7 @@ app.get('/', (req, res) => {
     res.json({
         message: 'Recipe Blog API Server is running!',
         status: 'OK',
-        timestamp: new Date().toISOString(),
-        endpoints: {
-        posts: '/posts, /post/:id, /posts/popular',
-        auth: '/auth/login, /auth/register, /auth/me',
-        uploads: '/upload',
-        comments: '/comments, /comments/random, /comments/post/:postId',
-        tags: '/tags, /posts/tags/:tagName'
-        }
+        timestamp: new Date().toISOString()
     });
 });
 

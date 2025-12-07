@@ -3,9 +3,12 @@ import PostModel from '../models/Post.js'
 export const getAll = async (req, res) => {
     try {
         const posts = await PostModel.find()
-            .populate({ path: "user", select: ["name", "avatar"] })
+            .populate({ 
+                path: "user", 
+                select: ["fullName", "avatarUrl"] 
+            })
             .exec()
-
+        
         res.json(posts)
     } catch (err) {
         console.log(err)
@@ -31,7 +34,11 @@ export const getTags = async (req, res) => {
 export const getPostsByTag = async (req, res) => {
     try {
         const tagName = req.params.tagName;
-        const posts = await PostModel.find({ tags: tagName }).populate('user').exec()
+        const posts = await PostModel.find({ tags: tagName })
+        .populate({
+            path: 'user',
+            select: ['fullName', 'avatarUrl']
+        }).exec()
         res.json(posts)
     } catch (err) {
         console.log(err)
@@ -46,7 +53,10 @@ export const getPopularPosts = async (req, res) => {
         const posts = await PostModel.find({ 
             viewsCount: { $gte: 25 } 
         })
-        .populate('user')
+        .populate({
+            path: 'user',
+            select: ['fullName', 'avatarUrl']
+        })
         .sort({ viewsCount: -1, commentsCount: -1 })
         .exec()
 
@@ -67,7 +77,10 @@ export const getOne = async (req, res) => {
             { _id: postId },
             { $inc: { viewsCount: 1 } },
             { new: true }
-        ).populate('user')
+        ).populate({
+            path: 'user',
+            select: ['fullName', 'avatarUrl']
+        })
 
         if (!doc) {
             return res.status(404).json({
