@@ -7,10 +7,10 @@ import { getAll, create, update, remove, getOne, getTags, getPostsByTag, getPopu
 import { getMe, login, register } from './controllers/UserController.js'
 import cors from 'cors';
 import { createComment, getPostComments, getRandomComments } from './controllers/CommentsController.js'
-import path from 'path'
-import { fileURLToPath } from 'url'
 import fs from 'fs';
-import { uploadFile } from './controllers/UploadController.js'
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import cloudinary from './config.js';
+import { uploadAvatars, uploadFile } from './controllers/UploadController.js'
 
 mongoose.connect('mongodb+srv://igormelnikov94_db_user:B3CClaZFwDYeXJMi@cluster0.7mmqj3e.mongodb.net/blog?appName=Cluster0',   
 )
@@ -19,12 +19,36 @@ mongoose.connect('mongodb+srv://igormelnikov94_db_user:B3CClaZFwDYeXJMi@cluster0
 
 const app = express()
 
-const storage = multer.memoryStorage()
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+      folder: 'recipe-blog',
+      allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'gif'],
+      transformation: [{ width: 1000, height: 1000, crop: 'limit' }],
+      public_id: (req, file) => {
+        return `post_${Date.now()}_${Math.round(Math.random() * 1E9)}`;
+      }
+    }
+});
+
+const avatarStorage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+      folder: 'recipe-blog/avatars',
+      allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+      transformation: [{ width: 200, height: 200, crop: 'fill', gravity: 'face' }],
+      public_id: (req, file) => {
+        return `avatar_${Date.now()}_${Math.round(Math.random() * 1E9)}`;
+      }
+    }
+});
+
+const uploadAvatar = multer({ storage: avatarStorage });
 
 const upload = multer({ 
     storage: storage,
     limits: {
-        fileSize: 5 * 1024 * 1024 // 5MB лимит
+        fileSize: 10 * 1024 * 1024
     }
 })
 
@@ -56,6 +80,7 @@ app.post('/auth/register', registerValidation, handleErrors, register)
 
 // Маршрут загрузки файлов
 app.post('/upload', upload.single('image'), uploadFile)
+app.post('/upload-avatar', uploadAvatar.single('image'), uploadAvatars)
 
 // Маршруты тегов
 app.get('/tags', getTags)
