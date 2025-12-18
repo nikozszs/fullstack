@@ -35,7 +35,6 @@ export const Registration = () => {
 
   const handleFileSelect = async (event) => {
     const file = event.target.files[0]
-
     if (!file) return
 
     if (!file.type.match('image.*')) {
@@ -58,30 +57,59 @@ export const Registration = () => {
     try {
       setIsLoading(true)
       setRegisterError('')
+      setUploadError('')
+
+      let avatarUrlToSend = '/noavatar.png';
+
+      if (selectedFile) {
+        console.log('🔄 Начинаем загрузку аватара...', {
+          name: selectedFile.name,
+          size: selectedFile.size,
+          type: selectedFile.type
+        });
+        const formData = new FormData()
+        formData.append('image', selectedFile)
+
+        try {
+          const response = await axios.post('/upload/avatar', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+          console.log('✅ Ответ от /upload/avatar:', response.data);
+
+          if (response.data && response.data.url) {
+            avatarUrlToSend = response.data.url;
+            console.log('Файл загружен, URL:', avatarUrlToSend);
+          } else {
+            console.log('Файл не загружен, используем дефолтный');
+          }
+        } catch (uploadErr) {
+          console.error('❌ Ошибка загрузки аватара:', uploadErr)
+        }
+      }
 
       const registerData = {
         email: values.email,
         password: values.password,
         fullName: values.fullName,
-        avatarUrl: '/noavatar.png'
+        avatarUrl: avatarUrlToSend
       }
 
-      if (selectedFile) {
-        const uploadFormData = new FormData()
-        uploadFormData.append('avatar', selectedFile)
-
-        const uploadResponse = await axios.post('/upload-avatar', uploadFormData)
-        registerData.avatarUrl = uploadResponse.data.url
-      }
+      console.log('📤 Регистрируем пользователя с аватаром:', avatarUrlToSend);
 
       const data = await dispatch(fetchRegister(registerData))
-  
-      if (!data.payload) {
-        return alert('Не удалось зарегистрироваться')
+
+      if (data.error) {
+        const errorMessage = data.payload || data.error.message || 'Ошибка регистрации'
+        setRegisterError(errorMessage)
+        return
       }
   
-      if ('token' in data.payload) {
-        window.localStorage.setItem('token', data.payload.token)
+      if (data.payload && data.payload.token) {
+        window.localStorage.setItem('token', data.payload.token);
+      } else {
+        setRegisterError('Не удалось зарегистрироваться');
       }
     } catch (err) {
       console.log(err)
