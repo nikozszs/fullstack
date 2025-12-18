@@ -4,7 +4,7 @@ import { minioConfig } from './minio.config.js';
 class FileStorageService {
     constructor() {
         this.client = new Minio.Client(minioConfig);
-        this.bucketName = 'recipe-blog';
+        this.bucketName = 'media';
     }
 
     async ensureBucketExists() {
