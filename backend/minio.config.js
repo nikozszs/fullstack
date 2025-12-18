@@ -1,4 +1,7 @@
+import dotenv from 'dotenv';
 import * as Minio from 'minio';
+
+dotenv.config();
 
 export const minioConfig = {
     endPoint: process.env.MINIO_ENDPOINT,
@@ -6,16 +9,19 @@ export const minioConfig = {
     useSSL: process.env.MINIO_USE_SSL === 'true',
     accessKey: process.env.MINIO_ACCESS_KEY,
     secretKey: process.env.MINIO_SECRET_KEY
-};
+}
 
-const minioClient = new Minio.Client({
-    endPoint: 'localhost',
-    port: 9000,
-    useSSL: false,
-    accessKey: 'minioadmin', 
-    secretKey: 'minioadmin'
-});
+export const BUCKET_NAME = process.env.MINIO_BUCKET_NAME
 
-export const BUCKET_NAME = 'media';
+const minioClient = new Minio.Client(minioConfig);
 
 export default minioClient;
+
+console.log('MinIO Config loaded:', {
+    endPoint: minioConfig.endPoint,
+    port: minioConfig.port,
+    useSSL: minioConfig.useSSL,
+    accessKey: minioConfig.accessKey ? '***' : 'not set',
+    secretKey: minioConfig.secretKey ? '***' : 'not set',
+    bucketName: BUCKET_NAME
+});

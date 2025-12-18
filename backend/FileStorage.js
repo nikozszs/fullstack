@@ -1,10 +1,10 @@
 import * as Minio from 'minio';
-import { minioConfig } from './minio.config.js';
+import { minioConfig, BUCKET_NAME  } from './minio.config.js';
 
 class FileStorageService {
     constructor() {
         this.client = new Minio.Client(minioConfig);
-        this.bucketName = 'media';
+        this.bucketName = BUCKET_NAME;
     }
 
     async ensureBucketExists() {
