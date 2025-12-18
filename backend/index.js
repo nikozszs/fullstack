@@ -1,4 +1,4 @@
-import express, { json } from 'express'
+import express from 'express'
 import multer from 'multer'
 import mongoose from 'mongoose'
 import { registerValidation, loginValidation, postCreateValidation, commentCreateValidation } from './validations.js'
@@ -7,59 +7,40 @@ import { getAll, create, update, remove, getOne, getTags, getPostsByTag, getPopu
 import { getMe, login, register } from './controllers/UserController.js'
 import cors from 'cors';
 import { createComment, getPostComments, getRandomComments } from './controllers/CommentsController.js'
-import fs from 'fs';
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
-import cloudinary from './config.js';
-import { uploadAvatars, uploadFile } from './controllers/UploadController.js'
+import { uploadFile } from './controllers/UploadController.js'
+import { getFileFromMinIO, initMinIO } from './controllers/FileController.js'
 
 mongoose.connect('mongodb+srv://igormelnikov94_db_user:B3CClaZFwDYeXJMi@cluster0.7mmqj3e.mongodb.net/blog?appName=Cluster0',   
 )
     .then(() => console.log('DB ok'))
-    .catch((err) => console.log(err))
+    .catch((err) => console.log(err));
+
+
+initMinIO().then(() => {
+    console.log('MinIO инициализирован');
+}).catch(err => {
+    console.error('Ошибка инициализации MinIO:', err);
+})
 
 const app = express()
 
-const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-      folder: 'recipe-blog',
-      allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'gif'],
-      transformation: [{ width: 1000, height: 1000, crop: 'limit' }],
-      public_id: (req, file) => {
-        return `post_${Date.now()}_${Math.round(Math.random() * 1E9)}`;
-      }
-    }
-});
-
-const avatarStorage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-      folder: 'recipe-blog/avatars',
-      allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
-      transformation: [{ width: 200, height: 200, crop: 'fill', gravity: 'face' }],
-      public_id: (req, file) => {
-        return `avatar_${Date.now()}_${Math.round(Math.random() * 1E9)}`;
-      }
-    }
-});
-
-const uploadAvatar = multer({ storage: avatarStorage });
-
+const storage = multer.memoryStorage();
 const upload = multer({ 
     storage: storage,
     limits: {
         fileSize: 10 * 1024 * 1024
+    },
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith('image/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Можно загружать только изображения'), false);
+        }
     }
-})
+});
 
 app.use(express.json())
 app.use(cors());
-
-const uploadsDir = '/tmp/uploads';
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-}
-app.use('/uploads', express.static(uploadsDir))
 
 app.get('/favicon.ico', (req, res) => {
     res.status(204).end()
@@ -80,7 +61,10 @@ app.post('/auth/register', registerValidation, handleErrors, register)
 
 // Маршрут загрузки файлов
 app.post('/upload', upload.single('image'), uploadFile)
-app.post('/upload-avatar', uploadAvatar.single('image'), uploadAvatars)
+app.post('/upload/avatar', upload.single('image'), uploadFile)
+
+// Маршрут для получения файлов из MinIO
+app.get('/api/files/:filename', getFileFromMinIO);
 
 // Маршруты тегов
 app.get('/tags', getTags)

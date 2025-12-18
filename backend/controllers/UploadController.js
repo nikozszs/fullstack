@@ -1,3 +1,5 @@
+import FileStorageService from '../FileStorage.js';
+
 export const uploadFile = async (req, res) => {
     try {
         if (!req.file) {
@@ -6,40 +8,22 @@ export const uploadFile = async (req, res) => {
             })
         }
 
-        const fileInfo = req.file;
+        const subfolder = req.body.type === 'avatar' ? 'avatars' : 'posts';
+        const uploadResult = await FileStorageService.uploadFile(req.file, subfolder);
         
         res.json({
-            url: fileInfo.path,
-            publicId: fileInfo.filename,
-            format: fileInfo.format,
-            size: fileInfo.size,
+            success: true,
+            url: uploadResult.url,
+            avatarUrl: uploadResult.url,
+            imageUrl: uploadResult.url,
             message: 'Файл успешно загружен'
         })
     } catch (err) {
         console.log(err)
         res.status(500).json({
-            message: "Ошибка при загрузке файла"
-        })
-    }
-}
-
-export const uploadAvatars = async (req, res) => {
-    try {
-        if (!req.file) {
-            return res.status(400).json({
-                message: 'Файл не загружен'
-            });
-        }
-
-        res.json({
-            avatarUrl: req.file.path,
-            message: 'Аватар успешно загружен'
-        });
-
-    } catch (err) {
-        console.log(err)
-        res.status(500).json({
-            message: "Ошибка при загрузке файла"
+            success: false,
+            message: 'Ошибка при загрузке файла',
+            error: err.message,
         })
     }
 }
